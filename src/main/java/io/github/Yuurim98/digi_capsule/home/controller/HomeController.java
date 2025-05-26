@@ -15,4 +15,9 @@ public class HomeController {
     public String loginPage() {
         return "auth/login";
     }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "auth/register";
+    }
 }
