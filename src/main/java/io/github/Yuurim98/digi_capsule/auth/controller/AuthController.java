@@ -18,7 +18,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/send-verification-code")
+    @PostMapping("/verification-code")
     public ResponseEntity<ApiResponse<String>> sendVerificationCode(@Valid @RequestBody EmailReqDto emailReqDto) {
         authService.sendVerificationCode(emailReqDto.getEmail());
         return ResponseEntity.ok(ApiResponse.success("인증번호가 발송되었습니다."));
