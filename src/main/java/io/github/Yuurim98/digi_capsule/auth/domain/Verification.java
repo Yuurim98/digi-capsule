@@ -55,4 +55,8 @@ public class Verification {
             throw new CustomException(ErrorCode.VERIFICATION_EXPIRED);
         }
     }
+
+    public boolean isVerified() {
+        return verificationStatus.equals(VerificationStatus.VERIFIED);
+    }
 }

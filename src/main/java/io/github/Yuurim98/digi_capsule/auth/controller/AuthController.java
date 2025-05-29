@@ -1,6 +1,7 @@
 package io.github.Yuurim98.digi_capsule.auth.controller;
 
 import io.github.Yuurim98.digi_capsule.auth.controller.dto.EmailReqDto;
+import io.github.Yuurim98.digi_capsule.auth.controller.dto.RegisterReqDto;
 import io.github.Yuurim98.digi_capsule.auth.controller.dto.VerificationReqDto;
 import io.github.Yuurim98.digi_capsule.auth.service.AuthService;
 import io.github.Yuurim98.digi_capsule.common.response.ApiResponse;
@@ -31,5 +32,11 @@ public class AuthController {
     VerificationReqDto verificationReqDto) {
         authService.checkVerificationCode(verificationReqDto);
         return ResponseEntity.ok(ApiResponse.success("인증이 완료되었습니다."));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<String>> register(@Valid @RequestBody RegisterReqDto registerReqDto) {
+        authService.register(registerReqDto);
+        return ResponseEntity.ok(ApiResponse.success("회원가입 되었습니다."));
     }
 }

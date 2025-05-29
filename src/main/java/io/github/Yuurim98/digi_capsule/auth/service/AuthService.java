@@ -1,5 +1,6 @@
 package io.github.Yuurim98.digi_capsule.auth.service;
 
+import io.github.Yuurim98.digi_capsule.auth.controller.dto.RegisterReqDto;
 import io.github.Yuurim98.digi_capsule.auth.controller.dto.VerificationReqDto;
 import io.github.Yuurim98.digi_capsule.auth.domain.Verification;
 import io.github.Yuurim98.digi_capsule.auth.generator.VerificationCodeGenerator;
@@ -7,7 +8,9 @@ import io.github.Yuurim98.digi_capsule.auth.repository.VerificationEntity;
 import io.github.Yuurim98.digi_capsule.auth.repository.VerificationRepository;
 import io.github.Yuurim98.digi_capsule.common.exception.CustomException;
 import io.github.Yuurim98.digi_capsule.common.exception.ErrorCode;
+import io.github.Yuurim98.digi_capsule.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,8 @@ public class AuthService {
 
     private final VerificationCodeGenerator verificationCodeGenerator;
     private final EmailService emailService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
     private final VerificationRepository verificationRepository;
 
     @Transactional
@@ -32,11 +37,10 @@ public class AuthService {
 
     @Transactional(noRollbackFor = CustomException.class)
     public void checkVerificationCode(VerificationReqDto verificationReqDto) {
-        VerificationEntity verificationEntity = verificationRepository.findTopByEmailOrderByCreatedAtDesc(
-                verificationReqDto.getEmail())
-            .orElseThrow(() -> new CustomException(ErrorCode.VERIFICATION_NOT_FOUND));
+        VerificationEntity verificationEntity = getVerificationEntity(
+            verificationReqDto.getEmail());
 
-        Verification verification = verificationEntity.toDomain();
+        Verification verification = getVerification(verificationEntity);
 
         try {
             verification.verifyCode(verificationReqDto.getVerificationCode());
@@ -45,4 +49,31 @@ public class AuthService {
         }
 
     }
+
+    @Transactional
+    public void register(RegisterReqDto registerReqDto) {
+        VerificationEntity verificationEntity = getVerificationEntity(registerReqDto.getEmail());
+
+        Verification verification = getVerification(verificationEntity);
+
+        if (!verification.isVerified()) {
+            throw new CustomException(ErrorCode.NOT_VERIFIED);
+        }
+
+        userService.createUser(registerReqDto, getEncodedPassword(registerReqDto));
+    }
+
+    private static Verification getVerification(VerificationEntity verificationEntity) {
+        return verificationEntity.toDomain();
+    }
+
+    private VerificationEntity getVerificationEntity(String email) {
+        return verificationRepository.findTopByEmailOrderByCreatedAtDesc(email)
+            .orElseThrow(() -> new CustomException(ErrorCode.VERIFICATION_NOT_FOUND));
+    }
+
+    private String getEncodedPassword(RegisterReqDto registerReqDto) {
+        return passwordEncoder.encode(registerReqDto.getPassword());
+    }
+
 }
