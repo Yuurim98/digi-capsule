@@ -9,6 +9,7 @@ import io.github.Yuurim98.digi_capsule.common.exception.CustomException;
 import io.github.Yuurim98.digi_capsule.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class AuthService {
     private final EmailService emailService;
     private final VerificationRepository verificationRepository;
 
+    @Transactional
     public void sendVerificationCode(String email) {
         String verificationCode = verificationCodeGenerator.generateVerificationCode();
         emailService.sendVerificationEmail(email, verificationCode);
@@ -28,13 +30,19 @@ public class AuthService {
         verificationRepository.save(verificationEntity);
     }
 
-
+    @Transactional(noRollbackFor = CustomException.class)
     public void checkVerificationCode(VerificationReqDto verificationReqDto) {
         VerificationEntity verificationEntity = verificationRepository.findTopByEmailOrderByCreatedAtDesc(
                 verificationReqDto.getEmail())
             .orElseThrow(() -> new CustomException(ErrorCode.VERIFICATION_NOT_FOUND));
 
         Verification verification = verificationEntity.toDomain();
-        verification.verifyCode(verificationReqDto.getVerificationCode());
+
+        try {
+            verification.verifyCode(verificationReqDto.getVerificationCode());
+        } finally {
+            verificationEntity.updateVerificationStatus(verification.getVerificationStatus());
+        }
+
     }
 }

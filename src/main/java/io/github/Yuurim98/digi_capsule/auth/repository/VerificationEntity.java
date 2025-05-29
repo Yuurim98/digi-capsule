@@ -1,9 +1,12 @@
 package io.github.Yuurim98.digi_capsule.auth.repository;
 
 import io.github.Yuurim98.digi_capsule.auth.domain.Verification;
+import io.github.Yuurim98.digi_capsule.auth.domain.VerificationStatus;
 import io.github.Yuurim98.digi_capsule.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,17 +32,18 @@ public class VerificationEntity extends BaseEntity {
     private String verificationCode;
 
     @Column(nullable = false)
-    private int verificationAttempt;
+    @Enumerated(EnumType.STRING)
+    private VerificationStatus verificationStatus;
 
     @Column(nullable = false)
     private LocalDateTime expiredAt;
 
     @Builder
-    private VerificationEntity(String email, String verificationCode, int verificationAttempt,
+    private VerificationEntity(String email, String verificationCode, VerificationStatus verificationStatus,
         LocalDateTime expiredAt) {
         this.email = email;
+        this.verificationStatus = verificationStatus;
         this.verificationCode = verificationCode;
-        this.verificationAttempt = verificationAttempt;
         this.expiredAt = expiredAt;
     }
 
@@ -47,13 +51,17 @@ public class VerificationEntity extends BaseEntity {
         return VerificationEntity.builder()
             .email(verification.getEmail())
             .verificationCode(verification.getVerificationCode())
-            .verificationAttempt(verification.getVerificationAttempt())
+            .verificationStatus(verification.getVerificationStatus())
             .expiredAt(verification.getExpiredAt())
             .build();
     }
 
     public Verification toDomain() {
-        return Verification.from(this.email, this.verificationCode, this.verificationAttempt,
+        return Verification.from(this.email, this.verificationCode, this.verificationStatus,
             this.expiredAt);
+    }
+
+    public void updateVerificationStatus(VerificationStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
     }
 }

@@ -15,19 +15,21 @@ public class Verification {
 
     private String verificationCode;
 
-    private int verificationAttempt;
+    private VerificationStatus verificationStatus;
 
     private LocalDateTime expiredAt;
 
     public static Verification create(String email, String verificationCode) {
         LocalDateTime now = LocalDateTime.now();
 
-        return new Verification(email, verificationCode, 0, now.plusMinutes(5));
+        return new Verification(email, verificationCode, VerificationStatus.PENDING,
+            now.plusMinutes(5));
     }
 
-    public static Verification from(String email, String verificationCode, int verificationAttempt,
+    public static Verification from(String email, String verificationCode,
+        VerificationStatus verificationStatus,
         LocalDateTime expiredAt) {
-        return new Verification(email, verificationCode, verificationAttempt, expiredAt);
+        return new Verification(email, verificationCode, verificationStatus, expiredAt);
     }
 
     public void verifyCode(String verificationCode) {
@@ -36,6 +38,8 @@ public class Verification {
 
         // 만료시간이 지났는지
         checkExpiration();
+
+        verificationStatus = VerificationStatus.VERIFIED;
     }
 
     private void checkCodeMatches(String verificationCode) {
@@ -47,6 +51,7 @@ public class Verification {
     private void checkExpiration() {
         LocalDateTime now = LocalDateTime.now();
         if (now.isAfter(expiredAt)) {
+            verificationStatus = VerificationStatus.EXPIRED;
             throw new CustomException(ErrorCode.VERIFICATION_EXPIRED);
         }
     }
