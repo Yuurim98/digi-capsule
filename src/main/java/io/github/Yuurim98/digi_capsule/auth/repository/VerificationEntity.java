@@ -35,7 +35,8 @@ public class VerificationEntity extends BaseEntity {
     private LocalDateTime expiredAt;
 
     @Builder
-    private VerificationEntity(String email, String verificationCode, int verificationAttempt, LocalDateTime expiredAt) {
+    private VerificationEntity(String email, String verificationCode, int verificationAttempt,
+        LocalDateTime expiredAt) {
         this.email = email;
         this.verificationCode = verificationCode;
         this.verificationAttempt = verificationAttempt;
@@ -49,5 +50,10 @@ public class VerificationEntity extends BaseEntity {
             .verificationAttempt(verification.getVerificationAttempt())
             .expiredAt(verification.getExpiredAt())
             .build();
+    }
+
+    public Verification toDomain() {
+        return Verification.from(this.email, this.verificationCode, this.verificationAttempt,
+            this.expiredAt);
     }
 }

@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다."),
-    VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+    VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    VERIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "인증번호를 발송하세요."),
+    VERIFICATION_EXPIRED(HttpStatus.GONE, "인증 시간이 만료되었습니다."),
+    VERIFICATION_CODE_MISMATCH(HttpStatus.BAD_REQUEST, "인증 번호가 일치하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

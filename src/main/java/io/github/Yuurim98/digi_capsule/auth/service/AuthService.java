@@ -1,9 +1,12 @@
 package io.github.Yuurim98.digi_capsule.auth.service;
 
+import io.github.Yuurim98.digi_capsule.auth.controller.dto.VerificationReqDto;
 import io.github.Yuurim98.digi_capsule.auth.domain.Verification;
 import io.github.Yuurim98.digi_capsule.auth.generator.VerificationCodeGenerator;
 import io.github.Yuurim98.digi_capsule.auth.repository.VerificationEntity;
 import io.github.Yuurim98.digi_capsule.auth.repository.VerificationRepository;
+import io.github.Yuurim98.digi_capsule.common.exception.CustomException;
+import io.github.Yuurim98.digi_capsule.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +29,12 @@ public class AuthService {
     }
 
 
+    public void checkVerificationCode(VerificationReqDto verificationReqDto) {
+        VerificationEntity verificationEntity = verificationRepository.findTopByEmailOrderByCreatedAtDesc(
+                verificationReqDto.getEmail())
+            .orElseThrow(() -> new CustomException(ErrorCode.VERIFICATION_NOT_FOUND));
+
+        Verification verification = verificationEntity.toDomain();
+        verification.verifyCode(verificationReqDto.getVerificationCode());
+    }
 }
