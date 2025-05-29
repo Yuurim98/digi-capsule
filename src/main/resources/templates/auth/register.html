@@ -19,7 +19,7 @@
               <label for="verificationCode" class="form-label">인증번호</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="verificationCode" name="verificationCode" placeholder="인증번호를 입력하세요" required>
-                <button class="btn btn-primary" type="button">인증</button>
+                <button class="btn btn-primary" type="button" id="sendVerification">인증</button>
               </div>
               <div id="verificationCodeHelp" class="form-text">이메일로 발송된 인증번호를 입력해주세요.</div>
             </div>
@@ -46,5 +46,6 @@
     </div>
   </div>
   <script th:src="@{/js/verification/sendCode.js}"></script>
+  <script th:src="@{/js/verification/sendVerification.js}"></script>
 </th:block>
 </html>
