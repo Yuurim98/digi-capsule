@@ -15,12 +15,13 @@
               <label for="password" class="form-label">비밀번호</label>
               <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password" required>
             </div>
-            <button type="submit" class="btn btn-primary">로그인</button>
+            <button type="button" class="btn btn-primary" id="sendLogin">로그인</button>
             <a href="/register" class="btn btn-secondary ms-2">회원가입</a>
           </fieldset>
         </form>
       </div>
     </div>
   </div>
+  <script th:src="@{/js/auth/sendLogin.js}"></script>
 </th:block>
 </html>

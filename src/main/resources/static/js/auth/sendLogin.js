@@ -1,0 +1,51 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const sendLoginBtn = document.getElementById('sendLogin');
+
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+
+  sendLoginBtn.addEventListener('click', () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    if (!email) {
+      alert('이메일 주소를 입력해주세요.');
+      return;
+    }
+
+    if (!password) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+    .then(response => { // response를 받음
+      if (!response.ok) {
+        return response.json().then(error => {
+          throw new Error(error.message);
+        });
+      }
+      return response.json(); // response body를 JSON 형태로 파싱하는 Promise를 반환
+    })
+    .then(data => { // 파싱된 JSON 데이터를 받음
+      console.log('서버 응답 데이터:', data);
+      if (data.status === 'success' && data.code === 200) {
+        alert(data.message);
+        window.location.href = '/';
+      }
+    })
+    .catch(error => {
+      console.error('로그인 오류:', error);
+      alert(error.message);
+    });
+  });
+});
