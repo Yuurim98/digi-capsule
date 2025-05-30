@@ -1,5 +1,6 @@
 package io.github.Yuurim98.digi_capsule.auth.service;
 
+import io.github.Yuurim98.digi_capsule.auth.controller.dto.LoginReqDto;
 import io.github.Yuurim98.digi_capsule.auth.controller.dto.RegisterReqDto;
 import io.github.Yuurim98.digi_capsule.auth.controller.dto.VerificationReqDto;
 import io.github.Yuurim98.digi_capsule.auth.domain.Verification;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -76,4 +78,17 @@ public class AuthService {
         return passwordEncoder.encode(registerReqDto.getPassword());
     }
 
+    public Long login(LoginReqDto loginReqDto) {
+        if (!userService.userExistsByEmail(loginReqDto.getEmail())) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        String encodedPassword = userService.getEncodedPasswordByEmail(loginReqDto.getEmail());
+
+        if (!passwordEncoder.matches(loginReqDto.getPassword(), encodedPassword)) {
+            throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
+        }
+
+        return userService.getUserIdByEmail(loginReqDto.getEmail());
+    }
 }

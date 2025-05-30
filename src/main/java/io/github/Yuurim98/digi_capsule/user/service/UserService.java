@@ -37,4 +37,23 @@ public class UserService {
             throw new CustomException(ErrorCode.NICKNAME_CONFLICT);
         }
     }
+
+    public boolean userExistsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    // TODO 조회 고민
+    public String getEncodedPasswordByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return userEntity.getPassword();
+    }
+
+    public Long getUserIdByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return userEntity.getId();
+    }
 }
