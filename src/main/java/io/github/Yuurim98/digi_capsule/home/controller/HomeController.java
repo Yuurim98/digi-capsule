@@ -20,4 +20,9 @@ public class HomeController {
     public String registerPage() {
         return "auth/register";
     }
+
+    @GetMapping("/capsule")
+    public String selfCapsuleCreatePage() {
+        return "timeCapsule/createTimeCapsule";
+    }
 }
