@@ -51,4 +51,8 @@ public class UserEntity extends BaseEntity {
             .build();
     }
 
+    public User toDomain() {
+        return User.from(this.id, this.nickName, this.email, this.password, this.phoneNumber);
+    }
+
 }
