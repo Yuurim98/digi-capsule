@@ -19,14 +19,16 @@
               <input type="date" class="form-control" id="viewDate" name="viewDate" required>
             </div>
             <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="isEmailNotificationEnabled" name="isEmailNotificationEnabled">
-              <label class="form-check-label" for="isEmailNotificationEnabled">열람일에 이메일 알림 받기</label>
+              <input type="checkbox" class="form-check-input" id="emailNotificationEnabled" name="emailNotificationEnabled">
+              <label class="form-check-label" for="emailNotificationEnabled">열람일에 이메일 알림 받기</label>
             </div>
-            <button type="button" class="btn btn-primary" id="submitCapsule">작성 완료</button>
+            <button type="button" class="btn btn-primary" id="sendTimeCapsule">작성 완료</button>
             <a href="/" class="btn btn-secondary ms-2">취소</a>
           </fieldset>
       </div>
     </div>
   </div>
+  <script th:src="@{/js/timeCapsule/sendTimeCapsule.js}"></script>
+
 </th:block>
 </html>
