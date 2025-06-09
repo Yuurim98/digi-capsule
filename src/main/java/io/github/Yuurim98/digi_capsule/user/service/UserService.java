@@ -63,4 +63,11 @@ public class UserService {
 
         return userEntity.toDomain();
     }
+
+    public UserEntity findUserEntityByIdOrThrow(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return userEntity;
+    }
 }

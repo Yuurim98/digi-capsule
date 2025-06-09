@@ -1,12 +1,15 @@
 package io.github.Yuurim98.digi_capsule.timeCapsule.service;
 
 import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.CreateCapsuleReqDto;
+import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.ReadCapsulesResDto;
 import io.github.Yuurim98.digi_capsule.timeCapsule.domain.TimeCapsule;
 import io.github.Yuurim98.digi_capsule.timeCapsule.mapper.TimeCapsuleMapper;
 import io.github.Yuurim98.digi_capsule.timeCapsule.repository.TimeCapsuleEntity;
 import io.github.Yuurim98.digi_capsule.timeCapsule.repository.TimeCapsuleRepository;
 import io.github.Yuurim98.digi_capsule.user.domain.User;
 import io.github.Yuurim98.digi_capsule.user.service.UserService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +29,22 @@ public class TimeCapsuleService {
         User user = userService.findUserByIdOrThrow(userId);
 
         // 타임캡슐 생성 후 DB 저장한다
-        TimeCapsule capsuleDomain = TimeCapsule.create(capsuleReqDto.getTitle(), capsuleReqDto.getContent(),
+        TimeCapsule capsuleDomain = TimeCapsule.create(capsuleReqDto.getTitle(),
+            capsuleReqDto.getContent(),
             capsuleReqDto.getViewDate(),
             capsuleReqDto.isEmailNotificationEnabled(), user);
 
         TimeCapsuleEntity entity = timeCapsuleMapper.toEntity(capsuleDomain);
         timeCapsuleRepository.save(entity);
+    }
+
+    public List<ReadCapsulesResDto> readMyCapsules(Long userId) {
+        List<TimeCapsuleEntity> timeCapsules = timeCapsuleRepository.findByUser(
+            userService.findUserEntityByIdOrThrow(userId));
+        return timeCapsules.stream()
+            .map(entity -> {
+                return new ReadCapsulesResDto(entity.getTitle(), entity.getViewDate());
+            })
+            .collect(Collectors.toList());
     }
 }
