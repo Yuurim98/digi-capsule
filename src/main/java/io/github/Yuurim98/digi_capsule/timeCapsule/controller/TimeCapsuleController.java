@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,10 +42,10 @@ public class TimeCapsuleController {
 
     @GetMapping("/my")
     public ResponseEntity<ApiResponse<List<ReadCapsulesResDto>>> readMyCapsules(
-        HttpServletRequest request) {
+        HttpServletRequest request, @PageableDefault(size = 10) Pageable pageable) {
 
         return ResponseEntity.ok(ApiResponse.success("타임캡슐 목록이 조회되었습니다.",
-            timeCapsuleService.readMyCapsules(getUserId(request.getSession(false)))));
+            timeCapsuleService.readMyCapsules(getUserId(request.getSession(false)), pageable)));
     }
 
     private Long getUserId(HttpSession session) {
