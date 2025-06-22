@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<th:block layout:fragment="content">
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-12">
+        <h2 class="mb-4 text-center">나에게 보낸 타임캡슐</h2>
+
+        <div id="capsulesContainer" class="row">
+          <p class="text-center text-muted" id="loadingMessage">타임캡슐 목록을 불러오는 중...</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</th:block>
+</html>
