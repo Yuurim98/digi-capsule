@@ -25,4 +25,9 @@ public class HomeController {
     public String selfCapsuleCreatePage() {
         return "timeCapsule/createTimeCapsule";
     }
+
+    @GetMapping("/capsules")
+    public String capsulesPage() {
+        return "timeCapsule/timeCapsuleList";
+    }
 }
