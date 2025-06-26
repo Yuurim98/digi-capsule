@@ -9,8 +9,8 @@ import io.github.Yuurim98.digi_capsule.timeCapsule.service.TimeCapsuleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +41,7 @@ public class TimeCapsuleController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<ApiResponse<List<ReadCapsulesResDto>>> readMyCapsules(
+    public ResponseEntity<ApiResponse<Page<ReadCapsulesResDto>>> readMyCapsules(
         HttpServletRequest request, @PageableDefault(size = 10) Pageable pageable) {
 
         return ResponseEntity.ok(ApiResponse.success("타임캡슐 목록이 조회되었습니다.",
