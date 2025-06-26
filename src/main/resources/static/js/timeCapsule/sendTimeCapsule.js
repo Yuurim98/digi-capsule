@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
       isEmailNotificationEnabled: emailNotificationEnabledInput
     };
 
-    fetch('/api/capsule', {
+    fetch('/api/capsules', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

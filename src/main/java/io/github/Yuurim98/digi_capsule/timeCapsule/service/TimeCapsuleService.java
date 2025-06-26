@@ -8,8 +8,6 @@ import io.github.Yuurim98.digi_capsule.timeCapsule.repository.TimeCapsuleEntity;
 import io.github.Yuurim98.digi_capsule.timeCapsule.repository.TimeCapsuleRepository;
 import io.github.Yuurim98.digi_capsule.user.domain.User;
 import io.github.Yuurim98.digi_capsule.user.service.UserService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,13 +38,9 @@ public class TimeCapsuleService {
         timeCapsuleRepository.save(entity);
     }
 
-    public List<ReadCapsulesResDto> readMyCapsules(Long userId, Pageable pageable) {
+    public Page<ReadCapsulesResDto> readMyCapsules(Long userId, Pageable pageable) {
         Page<TimeCapsuleEntity> timeCapsules = timeCapsuleRepository.findByUser(
             userService.findUserEntityByIdOrThrow(userId), pageable);
-        return timeCapsules.stream()
-            .map(entity -> {
-                return new ReadCapsulesResDto(entity.getTitle(), entity.getViewDate());
-            })
-            .collect(Collectors.toList());
+        return timeCapsules.map(ReadCapsulesResDto::from);
     }
 }

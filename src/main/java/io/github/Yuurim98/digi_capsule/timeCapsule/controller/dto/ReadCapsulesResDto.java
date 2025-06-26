@@ -1,15 +1,23 @@
 package io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto;
 
+import io.github.Yuurim98.digi_capsule.timeCapsule.repository.TimeCapsuleEntity;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class ReadCapsulesResDto {
 
-    private final String title;
+    private String title;
 
-    private final LocalDate viewDate;
+    private LocalDate viewDate;
+
+    private ReadCapsulesResDto(String title, LocalDate viewDate) {
+        this.title = title;
+        this.viewDate = viewDate;
+    }
+
+    public static ReadCapsulesResDto from(TimeCapsuleEntity timeCapsule) {
+        return new ReadCapsulesResDto(timeCapsule.getTitle(), timeCapsule.getViewDate());
+    }
 
 }
