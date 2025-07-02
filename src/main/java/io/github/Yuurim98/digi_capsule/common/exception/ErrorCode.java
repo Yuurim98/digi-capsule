@@ -18,7 +18,10 @@ public enum ErrorCode {
     NICKNAME_CONFLICT(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
-    NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+    NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
+    TIME_CAPSULE_NOT_FOUND(HttpStatus.NOT_FOUND, "저장된 캡슐이 없습니다."),
+    TIME_CAPSULE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 타임캡슐에 접근할 권한이 없습니다."),
+    TIME_CAPSULE_NOT_VIEWABLE_YET(HttpStatus.BAD_REQUEST, "아직 타임캡슐을 열람할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
