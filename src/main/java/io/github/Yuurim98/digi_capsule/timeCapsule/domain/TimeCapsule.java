@@ -32,6 +32,8 @@ public class TimeCapsule {
     }
 
     public boolean isViewable() {
-        return LocalDate.now().isAfter(this.viewDate);
+        LocalDate today = LocalDate.now();
+
+        return today.isEqual(viewDate) || today.isAfter(viewDate);
     }
 }
