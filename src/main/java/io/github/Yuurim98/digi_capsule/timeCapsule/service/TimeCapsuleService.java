@@ -1,6 +1,9 @@
 package io.github.Yuurim98.digi_capsule.timeCapsule.service;
 
+import io.github.Yuurim98.digi_capsule.common.exception.CustomException;
+import io.github.Yuurim98.digi_capsule.common.exception.ErrorCode;
 import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.CreateCapsuleReqDto;
+import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.ReadCapsuleResDto;
 import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.ReadCapsulesResDto;
 import io.github.Yuurim98.digi_capsule.timeCapsule.domain.TimeCapsule;
 import io.github.Yuurim98.digi_capsule.timeCapsule.mapper.TimeCapsuleMapper;
@@ -42,5 +45,24 @@ public class TimeCapsuleService {
         Page<TimeCapsuleEntity> timeCapsules = timeCapsuleRepository.findByUser(
             userService.findUserEntityByIdOrThrow(userId), pageable);
         return timeCapsules.map(ReadCapsulesResDto::from);
+    }
+
+    public ReadCapsuleResDto readMyCapsule(Long userId, Long capsuleId) {
+        User user = userService.findUserByIdOrThrow(userId);
+
+        TimeCapsuleEntity timeCapsuleEntity = timeCapsuleRepository.findById(capsuleId)
+            .orElseThrow(() -> new CustomException(ErrorCode.TIME_CAPSULE_NOT_FOUND));
+
+        TimeCapsule timeCapsule = TimeCapsule.from(timeCapsuleEntity);
+
+        if (!timeCapsule.isOwnedBy(user)) {
+            throw new CustomException(ErrorCode.TIME_CAPSULE_ACCESS_DENIED);
+        }
+
+        if (!timeCapsule.isViewable()) {
+            throw new CustomException(ErrorCode.TIME_CAPSULE_NOT_VIEWABLE_YET);
+        }
+
+        return ReadCapsuleResDto.from(timeCapsuleEntity);
     }
 }
