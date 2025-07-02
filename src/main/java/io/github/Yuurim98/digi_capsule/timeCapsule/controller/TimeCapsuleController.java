@@ -4,6 +4,7 @@ import io.github.Yuurim98.digi_capsule.common.exception.CustomException;
 import io.github.Yuurim98.digi_capsule.common.exception.ErrorCode;
 import io.github.Yuurim98.digi_capsule.common.response.ApiResponse;
 import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.CreateCapsuleReqDto;
+import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.ReadCapsuleResDto;
 import io.github.Yuurim98.digi_capsule.timeCapsule.controller.dto.ReadCapsulesResDto;
 import io.github.Yuurim98.digi_capsule.timeCapsule.service.TimeCapsuleService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +42,7 @@ public class TimeCapsuleController {
         return ResponseEntity.ok(ApiResponse.success("타임캡슐이 생성되었습니다."));
     }
 
-    @GetMapping("/my")
+    @GetMapping("/my") // TODO 개인, 친구 통합
     public ResponseEntity<ApiResponse<Page<ReadCapsulesResDto>>> readMyCapsules(
         HttpServletRequest request, @PageableDefault(size = 10) Pageable pageable) {
 
@@ -48,6 +50,15 @@ public class TimeCapsuleController {
             timeCapsuleService.readMyCapsules(getUserId(request.getSession(false)), pageable)));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ReadCapsuleResDto>> readMyCapsule(HttpServletRequest request,
+        @PathVariable Long id) {
+
+        return ResponseEntity.ok(ApiResponse.success("타임캡슐이 조회되었습니다.",
+            timeCapsuleService.readMyCapsule(getUserId(request.getSession(false)), id)));
+    }
+
+    // TODO 인터셉터 or 시큐리티
     private Long getUserId(HttpSession session) {
         if (session == null || session.getAttribute("userId") == null) {
             throw new CustomException(ErrorCode.NOT_LOGGED_IN);
