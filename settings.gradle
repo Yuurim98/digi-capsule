@@ -1,1 +1,3 @@
 rootProject.name = 'digi-capsule'
+
+include 'backend'
